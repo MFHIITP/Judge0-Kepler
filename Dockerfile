@@ -17,7 +17,7 @@ RUN apt-get update && \
       cron \
       libpq-dev \
       sudo && \
-    rm -rf /var/lib/apt/lists/* && 
+    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 2358
 
