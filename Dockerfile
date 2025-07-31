@@ -1,9 +1,19 @@
+# Still start from Judge0
 FROM judge0/compilers:1.4.0 AS production
 
-# 🩹 Patch Debian sources
+# Patch sources (because Debian Stretch is archived)
 RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
     sed -i 's|http://security.debian.org/debian-security|http://archive.debian.org/debian-security|g' /etc/apt/sources.list && \
     echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
+# Install dependencies and Ruby (replace 3.2.2 with latest version if needed)
+RUN apt-get update && \
+    apt-get install -y wget build-essential libssl-dev libreadline-dev zlib1g-dev && \
+    wget https://cache.ruby-lang.org/pub/ruby/3.2/ruby-3.2.2.tar.gz && \
+    tar -xzvf ruby-3.2.2.tar.gz && \
+    cd ruby-3.2.2 && ./configure && make && make install && \
+    cd .. && rm -rf ruby-3.2.2 ruby-3.2.2.tar.gz && \
+    gem install bundler
 
 # ✅ Install system packages + Ruby + Bundler
 RUN apt-get update && \
