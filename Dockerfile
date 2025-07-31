@@ -1,10 +1,14 @@
-FROM judge0/compilers:1.4.0 AS production
+FROM judge0/compilers:1.13.0 AS production
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      cron \
-      libpq-dev \
-      sudo && \
+        cron \
+        libpq-dev \
+        sudo \
+        ruby \
+        ruby-dev \
+        build-essential && \
+    gem install bundler && \
     rm -rf /var/lib/apt/lists/*
 
 EXPOSE 2358
@@ -12,7 +16,7 @@ EXPOSE 2358
 WORKDIR /api
 
 COPY Gemfile* ./
-RUN RAILS_ENV=production bundle
+RUN bundle install --without development test
 
 COPY cron /etc/cron.d
 RUN cat /etc/cron.d/* | crontab -
@@ -33,5 +37,4 @@ LABEL version=$JUDGE0_VERSION
 
 
 FROM production AS development
-
 CMD ["sleep", "infinity"]
