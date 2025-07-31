@@ -16,11 +16,13 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       cron \
       libpq-dev \
-      sudo && \
-    rm -rf /var/lib/apt/lists/* && \
-    echo "gem: --no-document" > /root/.gemrc && \
-    gem install bundler:2.1.4 && \
-    npm install -g --unsafe-perm aglio@2.3.0
+      sudo \
+      curl \
+      gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g --unsafe-perm aglio@2.3.0 && \
+    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 2358
 
