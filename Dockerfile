@@ -38,6 +38,8 @@ RUN cat /etc/cron.d/* | crontab -
 
 COPY . .
 
+RUN chmod +x /api/docker-entrypoint.sh /api/scripts/server
+
 ENTRYPOINT ["/api/docker-entrypoint.sh"]
 CMD ["/api/scripts/server"]
 
