@@ -5,12 +5,15 @@ RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /
     sed -i 's|http://security.debian.org/debian-security|http://archive.debian.org/debian-security|g' /etc/apt/sources.list && \
     echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 
-# ✅ Install system packages
+# ✅ Install system packages + Ruby + Bundler
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       cron \
       libpq-dev \
-      sudo && \
+      sudo \
+      ruby-full \
+      build-essential && \
+    gem install bundler && \
     rm -rf /var/lib/apt/lists/*
 
 EXPOSE 2358
@@ -18,7 +21,7 @@ EXPOSE 2358
 WORKDIR /api
 
 COPY Gemfile* ./
-RUN RAILS_ENV=production bundle
+RUN RAILS_ENV=production bundle install --without development test
 
 COPY cron /etc/cron.d
 RUN cat /etc/cron.d/* | crontab -
@@ -38,5 +41,4 @@ ENV JUDGE0_VERSION "1.13.1"
 LABEL version=$JUDGE0_VERSION
 
 FROM production AS development
-
 CMD ["sleep", "infinity"]
