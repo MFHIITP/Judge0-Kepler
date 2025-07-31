@@ -1,4 +1,4 @@
-FROM judge0/compilers:1.12.0 AS production
+FROM judge0/compilers:1.11.0 AS production
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
