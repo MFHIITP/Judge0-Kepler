@@ -21,7 +21,7 @@ RUN apt-get update && \
         build-essential && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
-    npm install -g --unsafe-perm aglio@2.3.0 && \
+    # npm install -g --unsafe-perm aglio@2.3.0 && \
     gem install bundler && \
     rm -rf /var/lib/apt/lists/*
 
