@@ -1,6 +1,11 @@
 # Start from Judge0 compilers base image
 FROM judge0/compilers:1.4.0 AS production
 
+# Patch outdated Debian sources
+RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
+    sed -i 's|http://security.debian.org/debian-security|http://archive.debian.org/debian-security|g' /etc/apt/sources.list && \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
 # Install required packages
 RUN apt-get update && apt-get install -y \
     cron \
@@ -22,8 +27,6 @@ COPY . .
 COPY cron /etc/cron.d
 RUN cat /etc/cron.d/* | crontab -
 
-COPY ./docker-entrypoint.sh /api/docker-entrypoint.sh
-
 # Entrypoint + permissions
 RUN chmod +x /api/docker-entrypoint.sh /api/scripts/server && \
     useradd -u 1000 -m -r judge0 && \
@@ -33,7 +36,7 @@ RUN chmod +x /api/docker-entrypoint.sh /api/scripts/server && \
 USER judge0
 
 # Environment + Labels
-ENV JUDGE0_VERSION="1.13.1"
+ENV JUDGE0_VERSION "1.13.1"
 LABEL version=$JUDGE0_VERSION
 
 # Entrypoint and default command
