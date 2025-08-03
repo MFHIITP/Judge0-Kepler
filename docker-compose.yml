@@ -49,6 +49,7 @@ services:
       - server
     env_file:
       - judge0.conf
+    restart: always
 
   redis:
     image: redis:7.2.4
